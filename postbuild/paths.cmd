@@ -13,7 +13,7 @@ set PATH_TO_VM_TOOLS=__EMPTY__
 set VOL_MOUNT_LETTER=__EMPTY__
 
 if _%COMPUTERNAME%_==_AGURZOU-DEV-PC_ goto config_AGURZOU-DEV
-if _%COMPUTERNAME%_==_ALEX-PC_ goto config_ALEX-PC
+if _%COMPUTERNAME%_==_DESKTOP-C61AAJA_ goto config_DESKTOP-C61AAJA
 if _%COMPUTERNAME%_==_AGURZOU-LPT_ goto config_AGURZOU-LPT
 
 echo.
@@ -22,15 +22,14 @@ echo You need to add a host dedicated section to PATHS.CMD and retry build.
 echo.
 goto end
 
-:config_ALEX-PC
-set PXE_PATH=E:\PXE
-set PATH_TO_VM_DISK="e:\workspace\VMware Virtual Machines\Windows 8.1 x64\myAppDisk.vmdk"
-set PATH_TO_VM_TOOLS="c:\Program Files (x86)\VMware\VMware Virtual Disk Development Kit\bin\"
-set VOL_MOUNT_LETTER=Q:
-set PATH_TO_VIX_TOOLS="c:\Program Files (x86)\VMware\VMware VIX"
-set PATH_TO_LOG_FILE="e:\workspace\Projects\MiniHV\logs\w81x64.log"
-set PATH_TO_VM_FILE="e:\workspace\VMware Virtual Machines\Windows 8.1 x64\Windows 8.1 x64.vmx"
+:config_DESKTOP-C61AAJA
 
+SET PATH_TO_VM_FILE="D:\Universitate\An 4\OSD\HAL-Lab\HAL9000\VM\HAL9000_VM\HAL9000.vmx"
+SET PATH_TO_VIX_TOOLS="C:\Program Files (x86)\VMware\VMware Workstation"
+SET VOL_MOUNT_LETTER="Q:"
+SET PATH_TO_LOG_FILE="D:\Universitate\An 4\OSD\HAL-Lab\HAL9000\VM\HAL9000_VM\HAL9000.log"
+SET PXE_PATH="D:\Universitate\An 4\OSD\HAL-Lab\HAL9000\PXE"
+SET PATH_TO_VM_DISK="D:\Universitate\An 4\OSD\HAL-Lab\HAL9000\VM\HAL9000_VM\HAL9000.vmdk"
 goto end
 
 :config_AGURZOU-DEV

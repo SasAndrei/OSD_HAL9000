@@ -1,0 +1,25 @@
+/log ON
+/loglevel 0
+/logcomp 8000
+(x86)\VMware\VMware testthreadprioritydonationchain Workstation\bin
+(x86)\VMware\VMware testthreadprioritydonationlower Workstation\bin
+(x86)\VMware\VMware testthreadprioritydonationmulti Workstation\bin
+(x86)\VMware\VMware testthreadprioritydonationmultiinverted Workstation\bin
+(x86)\VMware\VMware testthreadprioritydonationmultithreads Workstation\bin
+(x86)\VMware\VMware testthreadprioritydonationmultithreadsinverted Workstation\bin
+(x86)\VMware\VMware testthreadprioritydonationnest Workstation\bin
+(x86)\VMware\VMware testthreadprioritydonationonce Workstation\bin
+(x86)\VMware\VMware testthreadprioritymutex Workstation\bin
+(x86)\VMware\VMware testthreadpriorityroundrobin Workstation\bin
+(x86)\VMware\VMware testthreadprioritywakeup Workstation\bin
+(x86)\VMware\VMware testthreadpriorityyield Workstation\bin
+(x86)\VMware\VMware testthreadtimerabsolute Workstation\bin
+(x86)\VMware\VMware testthreadtimerabsolutepassed Workstation\bin
+(x86)\VMware\VMware testthreadtimermultiplethreads Workstation\bin
+(x86)\VMware\VMware testthreadtimermultipletimers Workstation\bin
+(x86)\VMware\VMware testthreadtimerperiodicmultiple Workstation\bin
+(x86)\VMware\VMware testthreadtimerperiodiconce Workstation\bin
+(x86)\VMware\VMware testthreadtimerperiodiczero Workstation\bin
+(x86)\VMware\VMware testthreadtimerrelative Workstation\bin
+(x86)\VMware\VMware testthreadtimerrelativezero Workstation\bin
+/shutdown
