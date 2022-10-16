@@ -793,7 +793,7 @@ _ThreadInit(
         pThread->Id = _ThreadSystemGetNextTid();
         pThread->State = ThreadStateBlocked;
         pThread->Priority = Priority;
-
+        LOGP("Thread created with ID: %d & Name: %s", pThread->Id, pThread->Name);
         LockInit(&pThread->BlockLock);
 
         LockAcquire(&m_threadSystemData.AllThreadsLock, &oldIntrState);
@@ -1190,7 +1190,7 @@ _ThreadDestroy(
     LockAcquire(&m_threadSystemData.AllThreadsLock, &oldState);
     RemoveEntryList(&pThread->AllList);
     LockRelease(&m_threadSystemData.AllThreadsLock, oldState);
-
+    LOGP("Thread destroyed with ID: %d & Name: %s", pThread->Id, pThread->Name);
     // This must be done before removing the thread from the process list, else
     // this may be the last thread and the process VAS will be freed by the time
     // ProcessRemoveThreadFromList - this function also dereferences the process
