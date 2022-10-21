@@ -36,6 +36,10 @@ typedef struct _THREAD_SYSTEM_DATA
 
     _Guarded_by_(ReadyThreadsLock)
     LIST_ENTRY          ReadyThreadsList;
+
+    _Guarded_by_(AllThreadsLock)
+    int                 AllThreadsNumber;
+
 } THREAD_SYSTEM_DATA, *PTHREAD_SYSTEM_DATA;
 
 static THREAD_SYSTEM_DATA m_threadSystemData;
@@ -145,6 +149,12 @@ ThreadSystemPreinit(
 
     InitializeListHead(&m_threadSystemData.ReadyThreadsList);
     LockInit(&m_threadSystemData.ReadyThreadsLock);
+
+    INTR_STATE oldIntrState;
+
+    LockAcquire(&m_threadSystemData.AllThreadsLock, &oldIntrState);
+    m_threadSystemData.AllThreadsNumber = 0;
+    LockRelease(&m_threadSystemData.AllThreadsLock, oldIntrState);
 }
 
 STATUS
@@ -679,7 +689,17 @@ ThreadExecuteForEachThreadEntry(
 
     status = STATUS_SUCCESS;
 
+    INTR_STATE oldIntrState;
+
+    LockAcquire(&m_threadSystemData.AllThreadsLock, &oldIntrState);
+    m_threadSystemData.AllThreadsNumber = 0;
+    LockRelease(&m_threadSystemData.AllThreadsLock, oldIntrState);
+
+    
+
     LockAcquire(&m_threadSystemData.AllThreadsLock, &oldState);
+    LOGP("Total number of threads: %d\n", &m_threadSystemData.AllThreadsNumber);
+    LOGP("All Threads List length: %d\n", &m_threadSystemData.AllThreadsList.Blink);
     status = ForEachElementExecute(&m_threadSystemData.AllThreadsList,
                                    Function,
                                    Context,
@@ -798,6 +818,7 @@ _ThreadInit(
 
         LockAcquire(&m_threadSystemData.AllThreadsLock, &oldIntrState);
         InsertTailList(&m_threadSystemData.AllThreadsList, &pThread->AllList);
+        m_threadSystemData.AllThreadsNumber++;
         LockRelease(&m_threadSystemData.AllThreadsLock, oldIntrState);
     }
     __finally
@@ -1190,6 +1211,11 @@ _ThreadDestroy(
     LockAcquire(&m_threadSystemData.AllThreadsLock, &oldState);
     RemoveEntryList(&pThread->AllList);
     LockRelease(&m_threadSystemData.AllThreadsLock, oldState);
+
+    LockAcquire(&m_threadSystemData.AllThreadsLock, &oldState);
+    m_threadSystemData.AllThreadsNumber--;
+    LockRelease(&m_threadSystemData.AllThreadsLock, oldState);
+
     LOGP("Thread destroyed with ID: %d & Name: %s", pThread->Id, pThread->Name);
     // This must be done before removing the thread from the process list, else
     // this may be the last thread and the process VAS will be freed by the time
