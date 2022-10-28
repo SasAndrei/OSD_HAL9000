@@ -59,7 +59,8 @@ Entry64(
 
     status = SystemInit(argv);
     ASSERT(SUCCEEDED(status));
-
+    LogSetLevel(LogLevelTrace);
+    LogSetTracedComponents(LogComponentThread);
     LOGL("InitSystem executed successfully\n");
 
 #ifdef TST
