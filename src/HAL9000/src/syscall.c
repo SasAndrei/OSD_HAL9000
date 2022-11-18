@@ -6,6 +6,7 @@
 #include "syscall_no.h"
 #include "mmu.h"
 #include "process_internal.h"
+#include "thread.h"
 #include "dmp_cpu.h"
 
 extern void SyscallEntry();
