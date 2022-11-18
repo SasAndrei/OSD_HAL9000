@@ -59,6 +59,42 @@ SystemPreinit(
     ProcessSystemPreinit();
 }
 
+static
+STATUS
+(__cdecl _HelloIpi)(
+    IN_OPT PVOID Context
+    )
+{
+    UNREFERENCED_PARAMETER(Context);
+
+    LOGP("Hello\n");
+    return STATUS_SUCCESS;
+}
+
+static
+STATUS
+(__cdecl _CPUTickIpi)(
+    IN_OPT PVOID Context
+    )
+{
+    //UNREFERENCED_PARAMETER(Context);
+    QWORD* Tick;
+    Tick = Context;
+
+    LOGP("%u\n", *(QWORD*)Context);
+    return STATUS_SUCCESS;
+}
+
+__forceinline
+QWORD
+RtcGetTickCount(
+    void
+)
+{
+    _mm_lfence();
+    return __rdtsc();
+}
+
 STATUS
 SystemInit(
     IN  ASM_PARAMETERS*     Parameters
@@ -70,8 +106,8 @@ SystemInit(
     status = STATUS_SUCCESS;
     pCpu = NULL;
 
-    LogSystemInit(LogLevelInfo,
-                  LogComponentInterrupt | LogComponentIo | LogComponentAcpi,
+    LogSystemInit(LogLevelTrace,
+        LogComponentUserMode,
                   TRUE
                   );
 
@@ -312,6 +348,14 @@ SystemInit(
     }
 
     LOGL("Network stack successfully initialized\n");
+    SMP_DESTINATION dest = { 0 };
+    QWORD Tick = 10;
+    status = SmpSendGenericIpiEx(_CPUTickIpi, &Tick, NULL, NULL, TRUE, SmpIpiSendToAllExcludingSelf, dest);
+    if (!SUCCEEDED(status))
+    {
+        LOG_FUNC_ERROR("SmpSendGenericIpi", status);
+        return status;
+    }
 
     return status;
 }
