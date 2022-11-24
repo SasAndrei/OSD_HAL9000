@@ -214,6 +214,7 @@ SyscallThreadExit(
     IN      STATUS                  ExitStatus
 )
 {
+    //UNREFERENCED_PARAMETER(ExitStatus);
     ThreadExit(ExitStatus);
     return STATUS_SUCCESS;
 }
