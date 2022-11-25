@@ -81,6 +81,27 @@ SyscallHandler(
         case SyscallIdProcessExit:
             status = SyscallProcessExit((STATUS)pSyscallParameters[0]);
             break;
+        case SyscallIdProcessCreate:
+            status = SyscallProcessCreate(
+                (char*) pSyscallParameters[0],
+                (QWORD) pSyscallParameters[1],
+                (char*) pSyscallParameters[2],
+                (QWORD) pSyscallParameters[3],
+                (UM_HANDLE *) pSyscallParameters[4]);
+            break;
+        case SyscallIdProcessGetPid:
+            SyscallProcessGetPid(
+                (UM_HANDLE) pSyscallParameters[0],
+                (PID *) pSyscallParameters[1]);
+            break;
+        case SyscallIdProcessWaitForTermination:
+            SyscallProcessWaitForTermination(
+                (UM_HANDLE) pSyscallParameters[0],
+                (STATUS *) pSyscallParameters[1]);
+            break;
+        case SyscallIdProcessCloseHandle:
+            SyscallProcessCloseHandle(
+                (UM_HANDLE) pSyscallParameters[0]);
         default:
             LOG_ERROR("Unimplemented syscall called from User-space!\n");
             status = STATUS_UNSUPPORTED;
@@ -214,7 +235,56 @@ SyscallThreadExit(
     IN      STATUS                  ExitStatus
 )
 {
-    //UNREFERENCED_PARAMETER(ExitStatus);
     ThreadExit(ExitStatus);
+    return STATUS_SUCCESS;
+}
+
+STATUS
+SyscallProcessCreate(
+    IN_READS_Z(PathLength)
+    char* ProcessPath,
+    IN          QWORD               PathLength,
+    IN_READS_OPT_Z(ArgLength)
+    char* Arguments,
+    IN          QWORD               ArgLength,
+    OUT         UM_HANDLE* ProcessHandle
+)
+{
+    UNREFERENCED_PARAMETER(PathLength);
+    UNREFERENCED_PARAMETER(ArgLength);
+    UNREFERENCED_PARAMETER(ProcessHandle);
+    PROCESS Process;
+    ProcessCreate(ProcessPath, Arguments, &Process);
+    return STATUS_SUCCESS;
+}
+
+STATUS
+SyscallProcessGetPid(
+    IN_OPT  UM_HANDLE               ProcessHandle,
+    OUT     PID* ProcessId
+)
+{
+    UNREFERENCED_PARAMETER(ProcessHandle);
+    UNREFERENCED_PARAMETER(ProcessId);
+    return STATUS_SUCCESS;
+}
+
+STATUS
+SyscallProcessWaitForTermination(
+    IN      UM_HANDLE               ProcessHandle,
+    OUT     STATUS* TerminationStatus
+)
+{
+    UNREFERENCED_PARAMETER(ProcessHandle);
+    UNREFERENCED_PARAMETER(TerminationStatus);
+    return STATUS_SUCCESS;
+}
+
+STATUS
+SyscallProcessCloseHandle(
+    IN      UM_HANDLE               ProcessHandle
+)
+{
+    UNREFERENCED_PARAMETER(ProcessHandle);
     return STATUS_SUCCESS;
 }
