@@ -1634,8 +1634,6 @@ _MmuMapPeInMemory(
             return status;
         }
 
-        LOG_TRACE_MMU("Will map section at 0x%X of size 0x%x\n", section.BaseAddress, section.Size);
-
         // The PE header tells us the section of the size without regard to the image's alignment
         sectionSize = AlignAddressUpper(section.Size, HeaderInfo->ImageAlignment);
 
@@ -1681,10 +1679,10 @@ _MmuMapPeInMemory(
         {
             // map first page of this section, this is shared with the last page
             // of the previous section(s)
-            LOG_TRACE_MMU("Will map 0x%X -> 0x%X with rights 0x%x\n",
+            /*LOG_TRACE_MMU("Will map 0x%X -> 0x%X with rights 0x%x\n",
                           MmuGetPhysicalAddress(PtrOffset(HeaderInfo->ImageBase, PtrDiff(pAlignedAddress,AddressToMap))),
                           pAlignedAddress,
-                          prevSectionRequiredRights | curSectionRequiredRights);
+                          prevSectionRequiredRights | curSectionRequiredRights);*/
 
             // Because the alignment of the sections may be less than a PAGE_SIZE we may incur executables which
             // have this undesirable property (of having a PAGE mapped with both execute and write rights)

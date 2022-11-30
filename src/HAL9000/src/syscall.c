@@ -8,6 +8,7 @@
 #include "process_internal.h"
 #include "thread.h"
 #include "dmp_cpu.h"
+#include "thread_internal.h"
 
 extern void SyscallEntry();
 
@@ -80,6 +81,11 @@ SyscallHandler(
             break;
         case SyscallIdProcessExit:
             status = SyscallProcessExit((STATUS)pSyscallParameters[0]);
+            break;
+        case SyscallIdThreadCreate:
+            SyscallThreadCreate((PFUNC_ThreadStart)pSyscallParameters[0],
+                (PVOID)pSyscallParameters[1],
+                (UM_HANDLE *)pSyscallParameters[2]);
             break;
         default:
             LOG_ERROR("Unimplemented syscall called from User-space!\n");
@@ -218,3 +224,21 @@ SyscallThreadExit(
     ThreadExit(ExitStatus);
     return STATUS_SUCCESS;
 }
+
+STATUS
+SyscallThreadCreate(
+    IN      PFUNC_ThreadStart       StartFunction,
+    IN_OPT  PVOID                   Context,
+    OUT     UM_HANDLE* ThreadHandle
+)
+{
+    PTHREAD Thread;
+    STATUS status = STATUS_SUCCESS;
+    Thread = ExAllocatePoolWithTag(PoolAllocateZeroMemory, sizeof(PTHREAD), HEAP_TEST_TAG, 0);
+
+    status = ThreadCreate("Usermode thread", ThreadPriorityDefault,
+        StartFunction, Context, &Thread);
+    *ThreadHandle = (UM_HANDLE)Thread;
+    return status;
+}
+
