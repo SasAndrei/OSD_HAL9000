@@ -10,7 +10,7 @@
 #include "gdtmu.h"
 #include "pe_exports.h"
 
-#define TID_INCREMENT               4
+#define TID_INCREMENT               -1
 
 #define THREAD_TIME_SLICE           1
 
@@ -47,7 +47,7 @@ _ThreadSystemGetNextTid(
     void
     )
 {
-    static volatile TID __currentTid = 0;
+    static volatile TID __currentTid = MAX_QWORD;
 
     return _InterlockedExchangeAdd64(&__currentTid, TID_INCREMENT);
 }
@@ -414,6 +414,8 @@ ThreadCreateEx(
     }
 
     *Thread = pThread;
+
+    LOGL("Thread [tid = 0x%X] is being created\n", pThread->Id);
 
     return status;
 }
