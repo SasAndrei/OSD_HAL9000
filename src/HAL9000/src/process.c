@@ -516,6 +516,9 @@ _ProcessInit(
         InsertTailList(&m_processData.ProcessList, &pProcess->NextProcess);
         MutexRelease(&m_processData.ProcessListLock);
 
+        InitializeListHead(&pProcess->FrameMappingsHead);
+        LockInit(&pProcess->FrameMapLock);
+
         LOG_TRACE_PROCESS("Process with PID 0x%X created\n", pProcess->Id);
     }
     __finally
