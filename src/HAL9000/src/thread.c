@@ -482,6 +482,7 @@ ThreadYield(
     {
         InsertTailList(&m_threadSystemData.ReadyThreadsList, &pThread->ReadyList);
     }
+    pThread->TimesYielded++;
     if (!bForcedYield)
     {
         pThread->TickCountEarly++;
@@ -795,6 +796,7 @@ _ThreadInit(
         pThread->Id = _ThreadSystemGetNextTid();
         pThread->State = ThreadStateBlocked;
         pThread->Priority = Priority;
+        pThread->TimesYielded = 0;
 
         LockInit(&pThread->BlockLock);
 
@@ -1189,6 +1191,7 @@ _ThreadDestroy(
     ASSERT(NULL != pThread);
     ASSERT(NULL == Context);
 
+    LOGL("Thread [tid = 0x%X] yielded %u times\n", pThread->Id, pThread->TimesYielded);
     LockAcquire(&m_threadSystemData.AllThreadsLock, &oldState);
     RemoveEntryList(&pThread->AllList);
     LockRelease(&m_threadSystemData.AllThreadsLock, oldState);
