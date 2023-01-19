@@ -144,6 +144,19 @@ void
 }
 
 void
+(__cdecl CmdThreadInfo)(
+    IN          QWORD       NumberOfParameters
+    )
+{
+    STATUS status;
+
+    ASSERT(NumberOfParameters == 0);
+
+    status = ThreadInfo();
+    ASSERT(SUCCEEDED(status));
+}
+
+void
 (__cdecl CmdYield)(
     IN          QWORD       NumberOfParameters
     )
