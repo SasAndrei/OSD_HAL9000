@@ -147,8 +147,8 @@ _IsrExceptionHandler(
     {
         if (!GdtIsSegmentPrivileged((WORD)StackPointer->Registers.CS))
         {
-            // Usermode app
-            ProcessTerminate(NULL);
+            PPROCESS currProcess = GetCurrentProcess();
+            ProcessTerminate(currProcess);
             exceptionHandled = TRUE;
         }
     }

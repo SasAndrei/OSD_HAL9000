@@ -6,8 +6,8 @@
 #include "syscall_no.h"
 #include "mmu.h"
 #include "process_internal.h"
-#include "thread.h"
 #include "dmp_cpu.h"
+#include "thread_internal.h"
 
 extern void SyscallEntry();
 
@@ -68,19 +68,19 @@ SyscallHandler(
         case SyscallIdIdentifyVersion:
             status = SyscallValidateInterface((SYSCALL_IF_VERSION)*pSyscallParameters);
             break;
-        // STUDENT TODO: implement the rest of the syscalls
         case SyscallIdFileWrite:
             status = SyscallFileWrite((UM_HANDLE)pSyscallParameters[0],
-                (PVOID)pSyscallParameters[1],
-                (QWORD)pSyscallParameters[2],
-                (QWORD*)pSyscallParameters[3]);
-            break;
-        case SyscallIdThreadExit:
-            status = SyscallThreadExit((STATUS)pSyscallParameters[0]);
+                                      (PVOID)pSyscallParameters[1],
+                                      (QWORD)pSyscallParameters[2],
+                                      (QWORD*)pSyscallParameters[3]);
             break;
         case SyscallIdProcessExit:
             status = SyscallProcessExit((STATUS)pSyscallParameters[0]);
             break;
+        case SyscallIdThreadExit:
+            status = SyscallThreadExit((STATUS)pSyscallParameters[0]);
+            break;
+        // STUDENT TODO: implement the rest of the syscalls
         default:
             LOG_ERROR("Unimplemented syscall called from User-space!\n");
             status = STATUS_UNSUPPORTED;
@@ -182,20 +182,20 @@ SyscallValidateInterface(
     return STATUS_SUCCESS;
 }
 
-// STUDENT TODO: implement the rest of the syscalls
-
 STATUS
 SyscallFileWrite(
     IN  UM_HANDLE                   FileHandle,
     IN_READS_BYTES(BytesToWrite)
-    PVOID                       Buffer,
+    PVOID                           Buffer,
     IN  QWORD                       BytesToWrite,
     OUT QWORD* BytesWritten
 )
 {
-    UNREFERENCED_PARAMETER(FileHandle);
-    LOG("[%s]:[%s]\n", ProcessGetName(NULL), Buffer);
-    *BytesWritten = BytesToWrite;
+    if (FileHandle == UM_FILE_HANDLE_STDOUT) {
+        LOG("%s\n", Buffer);
+        *BytesWritten = BytesToWrite;
+    }
+
     return STATUS_SUCCESS;
 }
 
@@ -205,7 +205,9 @@ SyscallProcessExit(
 )
 {
     UNREFERENCED_PARAMETER(ExitStatus);
+
     ProcessTerminate(NULL);
+
     return STATUS_SUCCESS;
 }
 
@@ -214,7 +216,8 @@ SyscallThreadExit(
     IN      STATUS                  ExitStatus
 )
 {
-    //UNREFERENCED_PARAMETER(ExitStatus);
     ThreadExit(ExitStatus);
+
     return STATUS_SUCCESS;
 }
+// STUDENT TODO: implement the rest of the syscalls

@@ -11,7 +11,5 @@ __main(
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(argv);
 
-    LOGL("Dummy program");
-
     return STATUS_SUCCESS;
 }
